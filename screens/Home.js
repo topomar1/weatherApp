@@ -1,16 +1,16 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import {useState, useEffect} from "react";
-import { StyleSheet, Text, View, Image, FlatList, ToucheableOpacity,RefreshControl} from 'react-native';
-import { FontAwesome5, EvilIcons } from '@expo/vector-icons';
+import { StyleSheet, Text, View, Image, FlatList, TouchableOpacity,RefreshControl} from 'react-native';
+import { FontAwesome5, EvilIcons,Ionicons } from '@expo/vector-icons';
 
 
 export default function Home(params) {
     const [weatherData, setWeatherData] = useState();
     
-    async function getWeather() {
+    async function getWeather(city = "Accra") {
         fetch(
-          "https://api.openweathermap.org/data/2.5/weather?q=Kumasi&appid=be34bce58d100edcccbd5177b4b4dc89"
+          `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=be34bce58d100edcccbd5177b4b4dc89`
         )
           .then((response) => response.json())
           .then((response) => {
@@ -50,21 +50,39 @@ export default function Home(params) {
 
             <View style={{marginTop:30,flexDirection:"row", alignItems: "center", justifyContent: 'space-between', paddingLeft:30, paddingRight:30}}> 
                 <Text style={{color: 'white', fontSize:60}}>
-                    {FTC(weatherData.main.temp).toFixed(1)}
-                        <Text style={{color:"orange", fontSize:30}}>C</Text></Text>
+                    {FTC(weatherData.main.temp).toFixed(1)} 
+                <Text style={{color:"orange", fontSize:30}}>C</Text></Text>
                 <Image source={require("../assets/wea.png")} style={{width:80, height:80, marginRight:25}}/>
             </View>
 
             <View style={{marginTop:26,flexDirection:"row", alignItems: "center", paddingLeft:30, paddingRight:30}}> 
                 <EvilIcons name="location" size={25} color="orange" />
                 <Text style={{color: 'white', fontSize:15, marginLeft:10}}>
-                    Accra-Ghana
+                    {weatherData.name}
                 </Text>
             </View>
 
-            
-           
+        </View>
 
+        <View style={{marginTop:15}}>
+            <FlatList style={{marginTop:10}} 
+             data={cities}
+             renderItem={({item})=>(
+             <TouchableOpacity 
+              onPress={()=>{getWeather(item)}}
+            
+             style={{padding:15, marginBottom:10, justifyContent: 'space-between',alignItems: 'center',backgroundColor:"#1B1C49", flexDirection:"row"}}>
+               <Text style={{color:"white"}}>{item }</Text>
+               <Ionicons name ={
+                   item === weatherData.name 
+                   ? "radio-button-on" 
+                   : "radio-button-off" 
+                   } 
+                   color="red"
+                   size={15} />
+             </TouchableOpacity>)} 
+      
+      />
 
         </View>
         
